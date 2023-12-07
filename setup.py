@@ -76,7 +76,7 @@ setup(
     python_requires='>=3.7',
     install_requires=[
         'setuptools',
-        'psycopg2',
+        'psycopg2 >= 2.4.2',
         'Zope >= 5',
         'Products.ZSQLMethods',
     ],

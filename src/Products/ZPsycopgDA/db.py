@@ -58,15 +58,23 @@ class DB(TM):
         self.calls = 0
         self.make_mappings()
 
-    def getconn(self, init=True):
-        # if init is False we are trying to get hold on an already existing
-        # connection, so we avoid to (re)initialize it risking errors.
+    def getconn(self, init='ignored', retry=100):
         conn = pool.getconn(self.dsn)
-        if init:
-            conn.set_session(isolation_level=int(self.tilevel))
+        _pool = pool.getpool(self.dsn, create=False)
+        if id(conn) not in _pool._initialized:
+            try:
+                conn.set_session(isolation_level=int(self.tilevel))
+            except psycopg2.InterfaceError:
+                # we got a closed connection from a poisoned pool ->
+                # close it and retry:
+                pool.putconn(self.dsn, conn, True)
+                if retry <= 0:
+                    raise ConflictError("InterfaceError from psycopg2")
+                return self.getconn(retry=retry - 1)
             conn.set_client_encoding(self.encoding)
             for tc in self.typecasts:
                 register_type(tc, conn)
+            _pool._initialized.add(id(conn))
         return conn
 
     def putconn(self, close=False):
@@ -77,12 +85,12 @@ class DB(TM):
         pool.putconn(self.dsn, conn, close)
 
     def getcursor(self):
-        conn = self.getconn(False)
+        conn = self.getconn()
         return conn.cursor()
 
     def _finish(self, *ignored):
         try:
-            conn = self.getconn(False)
+            conn = self.getconn()
             conn.commit()
             self.putconn()
         except AttributeError:
@@ -90,11 +98,13 @@ class DB(TM):
 
     def _abort(self, *ignored):
         try:
-            conn = self.getconn(False)
+            conn = self.getconn()
             conn.rollback()
             self.putconn()
         except AttributeError:
             pass
+        except (psycopg2.OperationalError, psycopg2.InterfaceError):
+            self.putconn(True)
 
     def open(self):
         # this will create a new pool for our DSN if not already existing,
@@ -189,7 +199,8 @@ class DB(TM):
                                   exc_info=True)
                     msg = 'TransactionRollbackError from psycopg2'
                     raise ConflictError(msg)
-                except psycopg2.OperationalError:
+                except (psycopg2.OperationalError,
+                        psycopg2.InterfaceError) as e:
                     msg = 'Operational error on connection, closing it.'
                     logging.exception(msg)
                     try:
@@ -199,6 +210,10 @@ class DB(TM):
                         logging.debug("Exception while closing pool",
                                       exc_info=True)
                         pass
+                    errmsg = str(e).replace("\n", " ")
+                    raise ConflictError(
+                        e.__class__.__name__ + " from psycopg2: " + errmsg
+                    )
                 if c.description is not None:
                     nselects += 1
                     if c.description != desc and nselects > 1:

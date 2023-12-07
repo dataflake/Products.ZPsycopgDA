@@ -4,6 +4,10 @@ Changelog
 4.2 (unreleased)
 ----------------
 
+- Ensure connection always get properly initialized.
+
+- Add support for PostgreSQL 13.
+
 
 4.1 (2023-10-04)
 ----------------
