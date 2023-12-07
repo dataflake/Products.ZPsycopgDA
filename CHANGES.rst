@@ -1,8 +1,10 @@
 Changelog
 =========
 
-4.2 (unreleased)
+4.2 (2023-12-07)
 ----------------
+
+- Add support for Python 3.12.
 
 - Ensure connection always get properly initialized.
 
