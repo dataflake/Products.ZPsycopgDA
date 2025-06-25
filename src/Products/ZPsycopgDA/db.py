@@ -176,7 +176,7 @@ class DB(TM):
 
     def query(self, query_string, max_rows=None, query_data=None):
         self._register()
-        self.calls = self.calls+1
+        self.calls = self.calls + 1
 
         desc = ()
         res = []
