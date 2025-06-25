@@ -4,6 +4,10 @@ Changelog
 4.3 (unreleased)
 ----------------
 
+- Add support for Python 3.13.
+
+- Drop support for Python 3.7 and 3.8.
+
 
 4.2 (2023-12-07)
 ----------------
