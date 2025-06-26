@@ -58,23 +58,30 @@ class DB(TM):
         self.calls = 0
         self.make_mappings()
 
-    def getconn(self, init='ignored', retry=100):
-        conn = pool.getconn(self.dsn)
-        _pool = pool.getpool(self.dsn, create=False)
-        if id(conn) not in _pool._initialized:
+    def getconn(self, init='ignored'):
+        _pool = pool.getpool(self.dsn, create=True)
+
+        # Loop to support cleaning up potentially all `maxconn` faulty
+        # connections. Add 1 more to force a fresh connection at least once.
+        tries = max([_pool.maxconn + 1, 1])
+        for _ in range(tries):
+            conn = pool.getconn(self.dsn, create=False)
             try:
-                conn.set_session(isolation_level=int(self.tilevel))
-            except psycopg2.InterfaceError:
-                # we got a closed connection from a poisoned pool ->
-                # close it and retry:
-                pool.putconn(self.dsn, conn, True)
-                if retry <= 0:
-                    raise ConflictError("InterfaceError from psycopg2")
-                return self.getconn(retry=retry - 1)
-            conn.set_client_encoding(self.encoding)
-            for tc in self.typecasts:
-                register_type(tc, conn)
-            _pool._initialized.add(id(conn))
+                cursor = conn.cursor()
+                cursor.execute("SELECT 1")
+                conn.rollback()
+                break
+            except (psycopg2.InterfaceError, psycopg2.OperationalError):
+                pool.putconn(self.dsn, conn, close=True)
+
+        if id(conn) in _pool._initialized:
+            return conn
+
+        conn.set_session(isolation_level=int(self.tilevel))
+        conn.set_client_encoding(self.encoding)
+        for tc in self.typecasts:
+            register_type(tc, conn)
+        _pool._initialized.add(id(conn))
         return conn
 
     def putconn(self, close=False):
