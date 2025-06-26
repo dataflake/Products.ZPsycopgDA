@@ -4,6 +4,14 @@ Changelog
 4.3 (unreleased)
 ----------------
 
+- Ensure connections always reconnect deterministically after a server
+  disconnect (or crash).
+  Previously the pool may have harboured long-running connections that only
+  got reconnected when the pool felt like returning it to the application.
+  Those connections can easily have lingered for a long time, causing
+  user-visible errors long after the original problem was fixed, e.g. when
+  the server has restarted a couple of hours ago.
+
 - Add support for Python 3.13.
 
 - Drop support for Python 3.7 and 3.8.
