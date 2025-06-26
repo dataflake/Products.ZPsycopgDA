@@ -58,25 +58,6 @@ class DB(TM):
         self.calls = 0
         self.make_mappings()
 
-    def getconn(self, init='ignored', retry=100):
-        conn = pool.getconn(self.dsn)
-        _pool = pool.getpool(self.dsn, create=False)
-        if id(conn) not in _pool._initialized:
-            try:
-                conn.set_session(isolation_level=int(self.tilevel))
-            except psycopg2.InterfaceError:
-                # we got a closed connection from a poisoned pool ->
-                # close it and retry:
-                pool.putconn(self.dsn, conn, True)
-                if retry <= 0:
-                    raise ConflictError("InterfaceError from psycopg2")
-                return self.getconn(retry=retry - 1)
-            conn.set_client_encoding(self.encoding)
-            for tc in self.typecasts:
-                register_type(tc, conn)
-            _pool._initialized.add(id(conn))
-        return conn
-
     def getconn(self, init='ignored'):
         _pool = pool.getpool(self.dsn, create=True)
 
