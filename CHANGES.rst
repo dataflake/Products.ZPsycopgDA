@@ -1,7 +1,7 @@
 Changelog
 =========
 
-4.3 (unreleased)
+4.3 (2025-10-07)
 ----------------
 
 - Ensure connections always reconnect deterministically after a server
@@ -11,6 +11,7 @@ Changelog
   Those connections can easily have lingered for a long time, causing
   user-visible errors long after the original problem was fixed, e.g. when
   the server has restarted a couple of hours ago.
+  (`#7 <https://github.com/dataflake/Products.ZPsycopgDA/pull/7>`_)
 
 - Add support for Python 3.13.
 
