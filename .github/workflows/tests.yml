@@ -35,11 +35,11 @@ jobs:
         config:
         # [Python version, tox env]
         - ["3.11", "release-check"]
-        - ["3.9", "py39"]
         - ["3.10", "py310"]
         - ["3.11", "py311"]
         - ["3.12", "py312"]
         - ["3.13", "py313"]
+        - ["3.14", "py314"]
         - ["3.11", "docs"]
         - ["3.11", "coverage"]
 
@@ -51,7 +51,8 @@ jobs:
       with:
         persist-credentials: false
     - name: Install uv + caching
-      uses: astral-sh/setup-uv@v6
+      # astral/setup-uv@7.1.2
+      uses: astral-sh/setup-uv@85856786d1ce8acfbcc2f13a5f3fbd6b938f9f41
       with:
         enable-cache: true
         cache-dependency-glob: |
