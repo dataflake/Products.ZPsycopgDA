@@ -1,7 +1,7 @@
 Changelog
 =========
 
-4.4 (unreleased)
+4.4 (2025-10-30)
 ----------------
 
 - Reverted connection reconnect patch from version 4.3. It did not work as
