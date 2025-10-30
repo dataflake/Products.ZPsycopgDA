@@ -7,6 +7,10 @@ Changelog
 - Reverted connection reconnect patch from version 4.3. It did not work as
   expected.
 
+- Add support for Python 3.14.
+
+- Drop support for Python 3.9.
+
 
 4.3 (2025-10-07)
 ----------------
