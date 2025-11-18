@@ -4,6 +4,8 @@ Changelog
 4.5 (unreleased)
 ----------------
 
+- Convert to PEP 420-style namespace package.
+
 
 4.4 (2025-10-30)
 ----------------
