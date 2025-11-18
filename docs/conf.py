@@ -5,15 +5,13 @@
 
 import datetime
 import os
+import sys
+from importlib.metadata import distribution
 
-import pkginfo
 
-
-parent = os.path.dirname(os.path.dirname(__file__))
-parent_dir = os.path.abspath(parent)
-pkg_info = pkginfo.Develop(parent_dir)
-pkg_version = pkg_info.version or ''
 year = datetime.datetime.now().year
+sys.path.append(os.path.abspath('../src'))
+rqmt = distribution('Products.ZPsycopgDA')
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -23,9 +21,9 @@ copyright = '2012-%i Federico Di Gregorio and Contributors' % year
 author = 'Federico Di Gregorio and Contributors'
 
 # The short X.Y version.
-version = pkg_version.replace('.dev0', '')
+version = '%s.%s' % tuple(map(int, rqmt.version.split('.')[:2]))
 # The full version, including alpha/beta/rc tags.
-release = pkg_version
+release = rqmt.version
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

@@ -14,7 +14,6 @@
 
 import os
 
-from setuptools import find_packages
 from setuptools import setup
 
 
@@ -69,19 +68,13 @@ setup(
         'Topic :: Database',
         'Topic :: Database :: Front-Ends',
     ],
-    packages=find_packages('src'),
-    include_package_data=True,
-    namespace_packages=['Products'],
-    package_dir={'': 'src'},
-    zip_safe=False,
     python_requires='>=3.10',
     install_requires=[
-        'setuptools',
         'psycopg2 >= 2.4.2',
         'Zope >= 5',
         'Products.ZSQLMethods',
     ],
     extras_require={
-        'docs': ['Sphinx', 'furo', 'pkginfo'],
+        'docs': ['Sphinx', 'furo'],
     },
 )
