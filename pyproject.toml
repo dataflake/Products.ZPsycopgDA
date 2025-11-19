@@ -8,6 +8,57 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "Products.ZPsycopgDA"
+version = "5.1"
+description = "Zope database adapter for PostGreSQL"
+keywords = ["zope", "database"]
+readme = "README.rst"
+requires-python = ">=3.10"
+license = "ZPL-2.1"
+license-files = ["LICENSE.txt"]
+authors = [
+  { name = "Federico Di Gregorio", email = "fog@initd.org" },
+]
+maintainers = [
+  { name = "Jens Vagelpohl and contributors", email = "jens@dataflake.org" },
+]
+classifiers = [
+  "Development Status :: 6 - Mature",
+  "Environment :: Web Environment",
+  "Framework :: Zope",
+  "Framework :: Zope :: 5",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Database",
+  "Topic :: Database :: Front-Ends",
+]
+dependencies = [
+  "Zope >= 5",
+  "Products.ZSQLMethods",
+  "psycopg2 >= 2.4.2",
+]
+
+[project.optional-dependencies]
+docs = [
+  "Sphinx",
+  "furo",
+]
+
+[project.urls]
+Documentation = "https://zpsycopgda.readthedocs.io"
+Issues = "https://github.com/dataflake/Products.ZPsycopgDA/issues"
+Source = "https://github.com/dataflake/Products.ZPsycopgDA"
+Changelog = "https://zpsycopgda.readthedocs.io/en/latest/changes.html"
+
 [tool.coverage.run]
 branch = true
 source = ["Products.ZPsycopgDA"]

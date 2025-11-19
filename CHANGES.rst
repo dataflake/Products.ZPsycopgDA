@@ -1,8 +1,10 @@
 Changelog
 =========
 
-5.1 (unreleased)
+5.1 (2025-11-19)
 ----------------
+
+- Move all package metadata to ``pyproject.toml``.
 
 
 5.0 (2025-11-19)
