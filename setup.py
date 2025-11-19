@@ -33,7 +33,7 @@ long_description = (
 
 setup(
     name='Products.ZPsycopgDA',
-    version='5.0',
+    version='5.1.dev0',
     license='ZPL-2.1',
     license_files=['LICENSE*'],
     author='Federico Di Gregorio',
